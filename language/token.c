@@ -1,13 +1,5 @@
 #include "token.h"
 
-int main ()
-{
-    char *buffer = read_file ("prog.txt");
-    struct Token **token_table = make_token_table (buffer);
-    token_table_dump (token_table);
-    token_table_dtor (token_table);
-}
-
 char *read_file (const char *text_file)
 {
     assert (text_file);
@@ -36,33 +28,14 @@ char *read_file (const char *text_file)
     return buffer;
 }
 
-int space_counter (char *buffer)
-{
-    assert (buffer);
-
-    int buf_size = strlen (buffer);
-    int spaces_amount = 0;
-
-    for (int symbol_number = 0; symbol_number < buf_size; symbol_number++)
-    {
-        if (buffer[symbol_number] == ' ')
-        {
-            spaces_amount++;
-        }
-    }
-
-    return spaces_amount;
-}
-
 struct Token **make_token_table (char *buffer)
 {
     assert (buffer);
 
     int symbol_number = 0;
     int buffer_size = strlen (buffer);
-    int spaces_amount = space_counter (buffer);
 
-    struct Token **token_table = token_table_ctor (spaces_amount);
+    struct Token **token_table = token_table_ctor (buffer_size);
     int current_token_number = 0;
 
     while (symbol_number < buffer_size)
@@ -113,6 +86,7 @@ struct Token *token_ctor ()
     }
 
     token->token_type = EMPTY;
+    return token;
 }
 
 void token_table_dtor (struct Token **token_table)
@@ -125,19 +99,17 @@ void token_table_dtor (struct Token **token_table)
         amount_elements++;
     }
 
-    for (int element_number = 0; element_number < amount_elements; element_number++)
+    for (int element_number = 0; element_number <= amount_elements; element_number++)
     {
-        //free (token_table[element_number]);
+        if (token_table[element_number]->token_type == NAME)
+        {
+            free (token_table[element_number]->value.string);
+        }
+
+        free (token_table[element_number]);
     }
-    // TODO какой-то двойной фри хуй знает почему
 
     free (token_table);
-}
-
-void token_dtor (struct Token *token)
-{
-    assert (token);
-    free (token);
 }
 
 void token_table_dump (struct Token **token_table)

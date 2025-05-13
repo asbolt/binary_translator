@@ -34,12 +34,10 @@ char *read_file (const char *text_file);
 struct Token *get_name (char *buffer, int *symbol_number);
 struct Token *get_digit (char *buffer, int *symbol_number);
 struct Token *get_operation (char *buffer, int *symbol_number);
-int space_counter (char *buffer);
 struct Token **make_token_table (char *buffer);
 struct Token **token_table_ctor (int spaces_amount);
 struct Token *token_ctor ();
 void token_table_dtor (struct Token **token_table);
-void token_dtor (struct Token *token);
 void token_table_dump (struct Token **token_table);
 
 #endif
