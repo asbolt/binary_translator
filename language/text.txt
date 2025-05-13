@@ -1,0 +1,26 @@
+mov eax, 7
+push eax
+push dword [a]
+pop eax
+pop ebx
+imul ebx
+push eax
+mov eax, 9
+push eax
+mov eax, 7
+push eax
+mov eax, 2
+push eax
+pop eax
+pop ebx
+sub eax, ebx
+push eax
+pop eax
+pop ebx
+imul ebx
+push eax
+pop eax
+pop ebx
+add eax, ebx
+push eax
+mov [a], eax

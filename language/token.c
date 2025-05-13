@@ -123,7 +123,7 @@ void token_table_dump (struct Token **token_table)
     {
         if (token_table[node_number]->token_type == DIGIT)
         {
-            printf ("%10d%10d%20f\n", node_number, token_table[node_number]->token_type, token_table[node_number]->value.digit);
+            printf ("%10d%10d%20d\n", node_number, token_table[node_number]->token_type, token_table[node_number]->value.digit);
             node_number++;
         }
         else if (token_table[node_number]->token_type == NAME)

@@ -1,17 +1,5 @@
 #include "recursive_descent.h"
 
-int main ()
-{
-    char *buffer = read_file ("prog.txt");
-    struct Token **token_table = make_token_table (buffer);
-    token_table_dump (token_table);
-
-    struct Node *node = make_tree (token_table);
-    token_table_dtor (token_table);
-    treeDump (node);
-    node_tree_dtor (node);
-}
-
 struct Node *node_ctor ()
 {
     struct Node *node = (struct Node *)calloc (1, sizeof (struct Node));
@@ -49,7 +37,7 @@ void node_tree_dtor (struct Node *node)
 struct Node *make_tree (struct Token **token_table)
 {
     int current_node = 0;
-    struct Node *node = get_sum (token_table, &current_node);
+    struct Node *node = get_equality (token_table, &current_node);
     return node;
 }
 
@@ -118,7 +106,7 @@ void treeDumpMakeNodeLabels (struct Node *root, int rang, FILE *dotFile)
 {
     if (root->type == NUMBER)
     {
-        fprintf (dotFile, "node%p [shape=\"rectangle\", label = \"%f\", rang = %d]\n", root, root->value.digit, rang);
+        fprintf (dotFile, "node%p [shape=\"rectangle\", label = \"%d\", rang = %d]\n", root, root->value.digit, rang);
     }
     else if (root->type == VARIABLE)
     {
@@ -260,7 +248,7 @@ void node_tree_error (struct Token **token_table, int *current_token)
 {
     if (token_table[*current_token]->token_type == DIGIT)
     {
-        printf ("Error with token type %d: %f\n", token_table[*current_token]->token_type, token_table[*current_token]->value.digit);
+        printf ("Error with token type %d: %d\n", token_table[*current_token]->token_type, token_table[*current_token]->value.digit);
     }
     else if (token_table[*current_token]->token_type == NAME)
     {
@@ -269,5 +257,27 @@ void node_tree_error (struct Token **token_table, int *current_token)
     else if (token_table[*current_token]->token_type == OPERATION)
     {
         printf ("Error with token type %d: %c\n", token_table[*current_token]->token_type, token_table[*current_token]->value.operation);
+    }
+}
+
+struct Node *get_equality (struct Token **token_table, int *current_token)
+{
+    struct Node *node = get_variable (token_table, current_token);
+
+    if (token_table[*current_token]->token_type == OPERATION && token_table[*current_token]->value.operation == '=')
+    {
+        struct Node *parent_node = node_ctor();
+        parent_node->type = PROCEDURE;
+        parent_node->value.number = EQUAL;
+        (*current_token)++;
+
+        parent_node->left = node;
+        parent_node->right = get_sum (token_table, current_token);
+        return parent_node;
+    }
+    else
+    {
+        node_tree_error (token_table, current_token);
+        return NULL;
     }
 }

@@ -12,7 +12,7 @@
 union Value
 {
     char  operation;
-    float digit;
+    int digit;
     char  *string;
 };
 

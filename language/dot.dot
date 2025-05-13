@@ -1,8 +1,24 @@
 digraph G{
 rankdir=HR;
-node0x5a6ccd9279f0 [shape="rectangle", label = "*", rang = 0]
-node0x5a6ccd9279a0 [shape="rectangle", label = "a", rang = 1]
-node0x5a6ccd927a20 [shape="rectangle", label = "7.000000", rang = 1]
-node0x5a6ccd9279f0 -> node0x5a6ccd9279a0
-node0x5a6ccd9279f0 -> node0x5a6ccd927a20
+node0x61e5a16ccbb0 [shape="rectangle", label = "=", rang = 0]
+node0x61e5a16ccb60 [shape="rectangle", label = "a", rang = 1]
+node0x61e5a16cccc0 [shape="rectangle", label = "+", rang = 1]
+node0x61e5a16ccc40 [shape="rectangle", label = "*", rang = 2]
+node0x61e5a16ccc10 [shape="rectangle", label = "7", rang = 3]
+node0x61e5a16ccc70 [shape="rectangle", label = "a", rang = 3]
+node0x61e5a16ccd50 [shape="rectangle", label = "*", rang = 2]
+node0x61e5a16ccd20 [shape="rectangle", label = "9", rang = 3]
+node0x61e5a16cce10 [shape="rectangle", label = "-", rang = 3]
+node0x61e5a16ccde0 [shape="rectangle", label = "7", rang = 4]
+node0x61e5a16cce70 [shape="rectangle", label = "2", rang = 4]
+node0x61e5a16ccbb0 -> node0x61e5a16ccb60
+node0x61e5a16ccbb0 -> node0x61e5a16cccc0
+node0x61e5a16cccc0 -> node0x61e5a16ccc40
+node0x61e5a16ccc40 -> node0x61e5a16ccc10
+node0x61e5a16ccc40 -> node0x61e5a16ccc70
+node0x61e5a16cccc0 -> node0x61e5a16ccd50
+node0x61e5a16ccd50 -> node0x61e5a16ccd20
+node0x61e5a16ccd50 -> node0x61e5a16cce10
+node0x61e5a16cce10 -> node0x61e5a16ccde0
+node0x61e5a16cce10 -> node0x61e5a16cce70
 }
