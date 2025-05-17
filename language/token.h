@@ -34,6 +34,7 @@ char *read_file (const char *text_file);
 struct Token *get_name (char *buffer, int *symbol_number);
 struct Token *get_digit (char *buffer, int *symbol_number);
 struct Token *get_operation (char *buffer, int *symbol_number);
+struct Token *get_str (char *buffer, int *symbol_number);
 struct Token **make_token_table (char *buffer);
 struct Token **token_table_ctor (int spaces_amount);
 struct Token *token_ctor ();

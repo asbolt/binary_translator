@@ -34,10 +34,15 @@ void node_tree_dtor (struct Node *node)
     free (node);
 }
 
-struct Node *make_tree (struct Token **token_table)
+struct Node *make_tree (struct Token **token_table, int *current_node)
 {
-    int current_node = 0;
-    struct Node *node = get_equality (token_table, &current_node);
+    struct Node *node = get_print (token_table, current_node);
+
+    if (token_table[*current_node]->token_type == OPERATION && token_table[*current_node]->value.operation == ';')
+    {
+        (*current_node)++;
+    }
+
     return node;
 }
 
@@ -279,5 +284,139 @@ struct Node *get_equality (struct Token **token_table, int *current_token)
     {
         node_tree_error (token_table, current_token);
         return NULL;
+    }
+}
+
+struct Node *get_data (struct Token **token_table, int *current_token)
+{
+    if (token_table[*current_token]->token_type == NAME && strcmp (token_table[*current_token]->value.string, "celoe") == 0)
+    {
+        struct Node *parent_node = node_ctor();
+        parent_node->type = FUNC_2ARG;
+        parent_node->value.number = INT;
+        (*current_token)++;
+
+        struct Node *name = get_variable (token_table, current_token);
+        if (!name)
+        {
+            node_tree_error (token_table, current_token);
+            return NULL;
+        }
+
+        struct Node *value = NULL;
+        if (token_table[*current_token]->token_type == OPERATION && token_table[*current_token]->value.operation == '=')
+        {
+            (*current_token)++;
+
+            value = get_num (token_table, current_token);
+        }
+        else
+        {
+            node_tree_error (token_table, current_token);
+            return NULL;
+        }
+
+        parent_node->left = name;
+        parent_node->right = value;
+        return parent_node;
+    }
+    else
+    {
+        return get_equality (token_table, current_token);
+    }
+}
+
+struct Node *get_print (struct Token **token_table, int *current_token)
+{
+    if (token_table[*current_token]->token_type == NAME && strcmp (token_table[*current_token]->value.string, "napechatat_chislo") == 0)
+    {
+        struct Node *parent_node = node_ctor();
+        parent_node->type = FUNC_1ARG;
+        parent_node->value.number = PRINT_INT;
+        (*current_token)++;
+
+        struct Node *name = NULL;
+        if (token_table[*current_token]->token_type == OPERATION && token_table[*current_token]->value.operation == '(')
+        {
+            (*current_token)++;
+
+            name = get_variable (token_table, current_token);
+
+            if (token_table[*current_token]->token_type == OPERATION && token_table[*current_token]->value.operation == ')')
+            {
+                (*current_token)++;
+            }
+        }
+        else
+        {
+            node_tree_error (token_table, current_token);
+            return NULL;
+        }
+
+        parent_node->left = name;
+        parent_node->right = NULL;
+        return parent_node;
+    }
+    else if (token_table[*current_token]->token_type == NAME && strcmp (token_table[*current_token]->value.string, "napechatat_stroky") == 0)
+    {
+        struct Node *parent_node = node_ctor();
+        parent_node->type = FUNC_1ARG;
+        parent_node->value.number = PRINT_STR;
+        (*current_token)++;
+
+        struct Node *name = NULL;
+        if (token_table[*current_token]->token_type == OPERATION && token_table[*current_token]->value.operation == '(')
+        {
+            (*current_token)++;
+
+            name = get_variable (token_table, current_token);
+
+            if (token_table[*current_token]->token_type == OPERATION && token_table[*current_token]->value.operation == ')')
+            {
+                (*current_token)++;
+            }
+        }
+        else
+        {
+            node_tree_error (token_table, current_token);
+            return NULL;
+        }
+
+        parent_node->left = name;
+        parent_node->right = NULL;
+        return parent_node;
+    }
+    else if (token_table[*current_token]->token_type == NAME && strcmp (token_table[*current_token]->value.string, "vvesti_chislo") == 0)
+    {
+        struct Node *parent_node = node_ctor();
+        parent_node->type = FUNC_1ARG;
+        parent_node->value.number = SCANF_INT;
+        (*current_token)++;
+
+        struct Node *name = NULL;
+        if (token_table[*current_token]->token_type == OPERATION && token_table[*current_token]->value.operation == '(')
+        {
+            (*current_token)++;
+
+            name = get_variable (token_table, current_token);
+
+            if (token_table[*current_token]->token_type == OPERATION && token_table[*current_token]->value.operation == ')')
+            {
+                (*current_token)++;
+            }
+        }
+        else
+        {
+            node_tree_error (token_table, current_token);
+            return NULL;
+        }
+
+        parent_node->left = name;
+        parent_node->right = NULL;
+        return parent_node;
+    }
+    else
+    {
+        return get_data (token_table, current_token);
     }
 }

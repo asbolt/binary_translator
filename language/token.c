@@ -49,6 +49,11 @@ struct Token **make_token_table (char *buffer)
             token_table[current_token_number] = get_name (buffer, &symbol_number);
             current_token_number++;
         } 
+        else if (buffer[symbol_number] == '"')
+        {
+            token_table[current_token_number] = get_str (buffer, &symbol_number);
+            current_token_number++;
+        } 
         else if (isdigit (buffer[symbol_number]))
         {
             token_table[current_token_number] = get_digit (buffer, &symbol_number);
@@ -149,7 +154,7 @@ struct Token *get_name (char *buffer, int *symbol_number)
     token->value.string = (char *)calloc (MAX_NAME_SIZE, sizeof (char));
 
     int element_number = 0;
-    while (isalpha (buffer[*symbol_number]))
+    while (isalpha (buffer[*symbol_number]) || buffer[*symbol_number] == '_')
     {
         token->value.string[element_number] = buffer[*symbol_number];
         element_number++;
@@ -198,5 +203,37 @@ struct Token *get_operation (char *buffer, int *symbol_number)
     token->token_type = OPERATION;
     token->value.operation = buffer[*symbol_number];
     (*symbol_number)++;
+    return token;
+}
+
+struct Token *get_str (char *buffer, int *symbol_number)
+{
+    assert (buffer);
+    assert (symbol_number);
+    (*symbol_number)++;
+
+    struct Token* token = token_ctor ();
+    token->token_type = NAME;
+    token->value.string = (char *)calloc (MAX_NAME_SIZE, sizeof (char));
+
+    int element_number = 0;
+    while (buffer[*symbol_number] != '"')
+    {
+        if (buffer[*symbol_number] == '\\')
+        {
+            token->value.string[element_number] = '\n';
+            element_number++;
+            (*symbol_number)++;
+        }
+        else
+        {
+            token->value.string[element_number] = buffer[*symbol_number];
+            element_number++;
+            (*symbol_number)++;
+        }
+    }
+
+    (*symbol_number)++;
+
     return token;
 }

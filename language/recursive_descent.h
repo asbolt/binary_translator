@@ -8,6 +8,8 @@ enum Node_type
     NUMBER = 1,
     PROCEDURE = 2,
     VARIABLE = 3,
+    FUNC_2ARG = 4,
+    FUNC_1ARG = 5,
     ERROR = 0 
 };
 
@@ -24,6 +26,18 @@ enum Operations_type
     SEMICOLON = 8,
     COMMA     = 9,
     EQUAL     = 10
+};
+
+enum Func_2arg_num
+{
+    INT       = 1
+};
+
+enum Func_1arg_num
+{
+    PRINT_INT       = 1,
+    PRINT_STR = 2,
+    SCANF_INT = 3
 };
 
 union Node_value
@@ -44,7 +58,13 @@ struct Node
 struct Operation 
 {
     char  operation;
-    float number;
+    int number;
+};
+
+struct Func
+{
+    char func [MAX_NAME_SIZE];
+    int number;
 };
 
 const struct Operation operations [] = {  {'+', ADD},
@@ -59,16 +79,20 @@ const struct Operation operations [] = {  {'+', ADD},
                                     {',', COMMA},
                                     {'=', EQUAL}};
 
+const struct Func func_2arg [] = {{"celoe", INT}};
+
                              
 struct Node *node_ctor ();
 void node_tree_dtor (struct Node *node);
-struct Node *make_tree (struct Token **token_table);
+struct Node *make_tree (struct Token **token_table, int *current_node);
 struct Node *get_sum (struct Token **token_table, int *current_token);
 struct Node *get_mul (struct Token **token_table, int *current_token);
 struct Node *get_brackets (struct Token **token_table, int *current_token);
 struct Node *get_num (struct Token **token_table, int *current_token);
 struct Node *get_variable (struct Token **token_table, int *current_token);
 struct Node *get_equality (struct Token **token_table, int *current_token);
+struct Node *get_data (struct Token **token_table, int *current_token);
+struct Node *get_print (struct Token **token_table, int *current_token);
 void node_tree_error (struct Token **token_table, int *current_token);
 void treeDump (struct Node *root);
 void treeDumpMakeNodeLabels (struct Node *root, int rang, FILE *dotFile);

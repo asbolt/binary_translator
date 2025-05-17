@@ -1,1 +1,7 @@
-a = 7 * a + 9 * (7 - 2)
+celoe a = 0;
+napechatat_stroky ("a = ")
+vvesti_chislo (a);
+napechatat_stroky ("a + 2 = ");
+a = a + 2;
+napechatat_chislo (a);
+napechatat_stroky ("\");
