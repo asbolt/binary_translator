@@ -1,7 +1,16 @@
-celoe a = 0;
-napechatat_stroky ("a = ")
-vvesti_chislo (a);
-napechatat_stroky ("a + 2 = ");
-a = a + 2;
-napechatat_chislo (a);
+celoe a = 1;
+celoe b = 1;
+celoe c = 0;
+
+vvesti_chislo (c);
+
+popka (a < c)
+{
+    b = b * (a + 1);
+    a = a + 1;
+} 
+
+napechatat_chislo (c)
+napechatat_stroky ("! = ")
+napechatat_chislo (b);
 napechatat_stroky ("\");

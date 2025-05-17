@@ -25,12 +25,16 @@ enum Operations_type
     R_BRACE   = 7,
     SEMICOLON = 8,
     COMMA     = 9,
-    EQUAL     = 10
+    EQUAL     = 10,
+    LESS      = 11,
+    MORE      = 12,
+    NOT_EQUAL = 13
 };
 
 enum Func_2arg_num
 {
-    INT       = 1
+    INT       = 1,
+    WHILE     = 2
 };
 
 enum Func_1arg_num
@@ -77,7 +81,10 @@ const struct Operation operations [] = {  {'+', ADD},
                                     {'}', R_BRACE},
                                     {';', SEMICOLON},
                                     {',', COMMA},
-                                    {'=', EQUAL}};
+                                    {'=', EQUAL},
+                                    {'<', LESS}, 
+                                    {'>', MORE},
+                                    {'!', NOT_EQUAL}};
 
 const struct Func func_2arg [] = {{"celoe", INT}};
 
@@ -93,6 +100,8 @@ struct Node *get_variable (struct Token **token_table, int *current_token);
 struct Node *get_equality (struct Token **token_table, int *current_token);
 struct Node *get_data (struct Token **token_table, int *current_token);
 struct Node *get_print (struct Token **token_table, int *current_token);
+struct Node *get_while (struct Token **token_table, int *current_token);
+struct Node *get_compare (struct Token **token_table, int *current_token);
 void node_tree_error (struct Token **token_table, int *current_token);
 void treeDump (struct Node *root);
 void treeDumpMakeNodeLabels (struct Node *root, int rang, FILE *dotFile);

@@ -2,20 +2,6 @@ section .text
                      global _start
                      
                      _start:
-mov rsi, buffer
-mov byte [rsi], 97
-inc rsi
-mov byte [rsi], 32
-inc rsi
-mov byte [rsi], 61
-inc rsi
-mov byte [rsi], 32
-inc rsi
-mov rax, 1
-mov rdi, 1
-mov rsi, buffer
-mov rdx, 4
- syscall
 mov rcx, 20
      mov rdi, buffer 
      mov al, 0 
@@ -28,7 +14,7 @@ mov rax, 0
 mov rdi, buffer
                      mov ebx, 10
                      mov eax, 0
-                     next0x5562e15c05c0:
+                     next0x5e606e157e00:
                      mul ebx
                      mov edx, 0
                      mov dl, byte [edi]
@@ -36,18 +22,66 @@ mov rdi, buffer
                      sub eax, '0'
                      inc edi
                      cmp byte [edi], 10
-                     jne next0x5562e15c05c0
-mov dword [a], eax
+                     jne next0x5e606e157e00
+mov dword [c], eax
+jmp while0x5e606e157e80
+cond0x5e606e157e80:
+mov rax, 0
+mov eax, dword [b]
+push rax
+mov rax, 0
+mov eax, dword [a]
+push rax
+mov eax, 1
+push rax
+pop rax
+pop rbx
+add eax, ebx
+push rax
+pop rax
+pop rbx
+imul ebx
+push rax
+mov [b], eax
+mov rax, 0
+mov eax, dword [a]
+push rax
+mov eax, 1
+push rax
+pop rax
+pop rbx
+add eax, ebx
+push rax
+mov [a], eax
+while0x5e606e157e80:
+mov rax, 0
+mov eax, dword [a]
+push rax
+mov ecx, eax
+mov rax, 0
+mov eax, dword [c]
+push rax
+mov ebx, ecx
+                    cmp ebx, eax
+jl cond0x5e606e157e80
+mov eax, dword [c]
+ mov ebx, 10
+ mov rsi, buffer + 18
+ next0x5e606e158440:
+ mov edx, 0
+ div ebx
+ mov byte [rsi], dl
+ add byte [rsi], '0'
+ dec rsi
+ cmp eax, 0 
+ jne next0x5e606e158440
+ inc rsi
+mov rax, 1
+mov rdi, 1
+mov rdx, 20
+ syscall
 mov rsi, buffer
-mov byte [rsi], 97
-inc rsi
-mov byte [rsi], 32
-inc rsi
-mov byte [rsi], 43
-inc rsi
-mov byte [rsi], 32
-inc rsi
-mov byte [rsi], 50
+mov byte [rsi], 33
 inc rsi
 mov byte [rsi], 32
 inc rsi
@@ -58,29 +92,19 @@ inc rsi
 mov rax, 1
 mov rdi, 1
 mov rsi, buffer
-mov rdx, 8
+mov rdx, 4
  syscall
-mov rax, 0
-mov eax, dword [a]
-push rax
-mov eax, 2
-push rax
-pop rax
-pop rbx
-add eax, ebx
-push rax
-mov [a], eax
-mov eax, dword [a]
+mov eax, dword [b]
  mov ebx, 10
  mov rsi, buffer + 18
- next0x5562e15c0880:
+ next0x5e606e158540:
  mov edx, 0
  div ebx
  mov byte [rsi], dl
  add byte [rsi], '0'
  dec rsi
  cmp eax, 0 
- jne next0x5562e15c0880
+ jne next0x5e606e158540
  inc rsi
 mov rax, 1
 mov rdi, 1
@@ -98,6 +122,8 @@ mov rax, 60
                      xor rdi, rdi
                      syscall
 section .data
-a dd 0
+a dd 1
+b dd 1
+c dd 0
 section .bss
          buffer resb 20

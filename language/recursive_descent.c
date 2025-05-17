@@ -36,7 +36,7 @@ void node_tree_dtor (struct Node *node)
 
 struct Node *make_tree (struct Token **token_table, int *current_node)
 {
-    struct Node *node = get_print (token_table, current_node);
+    struct Node *node = get_while (token_table, current_node);
 
     if (token_table[*current_node]->token_type == OPERATION && token_table[*current_node]->value.operation == ';')
     {
@@ -418,5 +418,96 @@ struct Node *get_print (struct Token **token_table, int *current_token)
     else
     {
         return get_data (token_table, current_token);
+    }
+}
+
+struct Node *get_while (struct Token **token_table, int *current_token)
+{
+    if (token_table[*current_token]->token_type == NAME && strcmp (token_table[*current_token]->value.string, "popka") == 0)
+    {
+        struct Node *parent_node = node_ctor();
+        parent_node->type = FUNC_2ARG;
+        parent_node->value.number = WHILE;
+        (*current_token)++;
+
+        struct Node *condition = NULL;
+        if (token_table[*current_token]->token_type == OPERATION && token_table[*current_token]->value.operation == '(')
+        {
+            (*current_token)++;
+
+            condition = get_compare (token_table, current_token);
+
+            if (token_table[*current_token]->token_type == OPERATION && token_table[*current_token]->value.operation == ')')
+            {
+                (*current_token)++;
+            }
+        }
+        else
+        {
+            node_tree_error (token_table, current_token);
+            return NULL;
+        }
+
+        parent_node->left = condition;
+        return parent_node;
+    }
+    else
+    {
+        return get_print (token_table, current_token);
+    }
+}
+
+struct Node *get_compare (struct Token **token_table, int *current_token)
+{
+    struct Node *node = get_sum (token_table, current_token);
+
+    if (token_table[*current_token]->token_type == OPERATION && token_table[*current_token]->value.operation == '<')
+    {
+        struct Node *parent_node = node_ctor();
+        parent_node->type = PROCEDURE;
+        parent_node->value.number = LESS;
+        (*current_token)++;
+
+        parent_node->left = node;
+        parent_node->right = get_sum (token_table, current_token);
+        return parent_node;
+    }
+    else if (token_table[*current_token]->token_type == OPERATION && token_table[*current_token]->value.operation == '>')
+    {
+        struct Node *parent_node = node_ctor();
+        parent_node->type = PROCEDURE;
+        parent_node->value.number = MORE;
+        (*current_token)++;
+
+        parent_node->left = node;
+        parent_node->right = get_sum (token_table, current_token);
+        return parent_node;
+    }
+    else if (token_table[*current_token]->token_type == OPERATION && token_table[*current_token]->value.operation == '!')
+    {
+        struct Node *parent_node = node_ctor();
+        parent_node->type = PROCEDURE;
+        parent_node->value.number = NOT_EQUAL;
+        (*current_token)++;
+
+        parent_node->left = node;
+        parent_node->right = get_sum (token_table, current_token);
+        return parent_node;
+    }
+    else if (token_table[*current_token]->token_type == OPERATION && token_table[*current_token]->value.operation == '=')
+    {
+        struct Node *parent_node = node_ctor();
+        parent_node->type = PROCEDURE;
+        parent_node->value.number = EQUAL;
+        (*current_token)++;
+
+        parent_node->left = node;
+        parent_node->right = get_sum (token_table, current_token);
+        return parent_node;
+    }
+    else
+    {
+        node_tree_error (token_table, current_token);
+        return NULL;
     }
 }

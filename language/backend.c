@@ -2,9 +2,11 @@
 
 void change_variable_value (struct Node *node, FILE *file);
 void asdfghj (struct Token **token_table, FILE *file);
+char *jhvljvl (struct Token **token_table, FILE *file, char *data_buffer, int *current_token, struct Node *node);
 void ariphmetic (struct Node *node, FILE *file);
 void print_int (struct Node *node, FILE *file);
 void scan_int (struct Node *node, FILE *file);
+void get_while_asm (struct Node *node, FILE *file, char *data_buffer, struct Token **token_table, int *current_token);
 void print_str (struct Node *node, char *data_buffer, FILE *file);
 char *data (struct Node *node, char *data_buffer);
 
@@ -35,56 +37,7 @@ void asdfghj (struct Token **token_table, FILE *file)
     int current_token = 0;
     while ((node = make_tree (token_table, &current_token)) != NULL)
     {
-        switch (node->type)
-        {
-            case PROCEDURE:
-                switch (node->value.number)
-                {
-                    case EQUAL:
-                        ariphmetic (node->right, file);
-                        fprintf (file, "mov [%s], eax\n", node->left->value.name);
-                        break;
-
-                    default:
-                        break;
-                }
-            break;
-            
-            case FUNC_2ARG:
-                switch (node->value.number)
-                {
-                case INT:
-                    data_buffer = data (node, data_buffer);
-                    break;
-                
-                default:
-                    break;
-                }
-            break;
-
-            case FUNC_1ARG:
-                switch (node->value.number)
-                {
-                case PRINT_INT:
-                    print_int (node, file);
-                    break;
-
-                case PRINT_STR:
-                    print_str (node, data_buffer, file);
-                    break;
-
-                case SCANF_INT:
-                    scan_int (node, file);
-                    break;
-                
-                default:
-                    break;
-                }
-            break;
-            
-            default:
-                break;
-        }
+        data_buffer = jhvljvl (token_table, file, data_buffer, &current_token, node);
     }
 
     fprintf (file, "mov rax, 60\n \
@@ -234,4 +187,109 @@ void scan_int (struct Node *node, FILE *file)
 
     fprintf (file, "mov dword [%s], eax\n", node->left->value.name);
 
+}
+
+void get_while_asm (struct Node *node, FILE *file, char *data_buffer, struct Token **token_table, int *current_token)
+{
+    (*current_token)++;
+
+    fprintf (file, "jmp while%p\ncond%p:\n", node, node);
+
+    struct Node *node_while = node_ctor ();
+    while (token_table[*current_token]->token_type != OPERATION && token_table[*current_token]->value.operation != '}')
+    {
+        node_while = make_tree (token_table, current_token);
+        jhvljvl (token_table, file, data_buffer, current_token, node_while);
+    }
+
+    (*current_token)++;
+
+    fprintf (file, "while%p:\n", node);
+    ariphmetic (node->left->left, file);
+    fprintf (file, "mov ecx, eax\n");
+    ariphmetic (node->left->right, file);
+    fprintf (file, "mov ebx, ecx\n\
+                    cmp ebx, eax\n");
+
+    switch (node->left->value.number)
+    {
+    case LESS:
+        fprintf (file, "jl cond%p\n", node);
+        break;
+
+    case MORE:
+        fprintf (file, "jg cond%p\n", node);
+        break;
+
+    case EQUAL:
+        fprintf (file, "je cond%p\n", node);
+        break;
+
+    case NOT_EQUAL:
+        fprintf (file, "jne cond%p\n", node);
+        break;
+    
+    default:
+        break;
+    }
+}
+
+char *jhvljvl (struct Token **token_table, FILE *file, char *data_buffer, int *current_token, struct Node *node)
+{
+    switch (node->type)
+        {
+            case PROCEDURE:
+                switch (node->value.number)
+                {
+                    case EQUAL:
+                        ariphmetic (node->right, file);
+                        fprintf (file, "mov [%s], eax\n", node->left->value.name);
+                        break;
+
+                    default:
+                        break;
+                }
+            break;
+            
+            case FUNC_2ARG:
+                switch (node->value.number)
+                {
+                case INT:
+                    data_buffer = data (node, data_buffer);
+                    break;
+
+                case WHILE:
+                    get_while_asm (node, file, data_buffer, token_table, current_token);
+                    break;
+                
+                default:
+                    break;
+                }
+            break;
+
+            case FUNC_1ARG:
+                switch (node->value.number)
+                {
+                case PRINT_INT:
+                    print_int (node, file);
+                    break;
+
+                case PRINT_STR:
+                    print_str (node, data_buffer, file);
+                    break;
+
+                case SCANF_INT:
+                    scan_int (node, file);
+                    break;
+                
+                default:
+                    break;
+                }
+            break;
+            
+            default:
+                break;
+        }
+
+    return data_buffer;
 }
