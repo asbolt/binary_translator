@@ -1,7 +1,0 @@
-digraph G{
-rankdir=HR;
-node0x5c84fb034a40 [shape="rectangle", label = "a", rang = 1]
-node0x5c84fb034a90 [shape="rectangle", label = "74", rang = 1]
-node0x5c84fb034a10 -> node0x5c84fb034a40
-node0x5c84fb034a10 -> node0x5c84fb034a90
-}

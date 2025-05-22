@@ -1,16 +1,4 @@
-celoe a = 1;
-celoe b = 1;
-celoe c = 0;
-
-vvesti_chislo (c);
-
-popka (a < c)
-{
-    b = b * (a + 1);
-    a = a + 1;
-} 
-
-napechatat_chislo (c)
-napechatat_stroky ("! = ")
-napechatat_chislo (b);
+celoe a = 4;
+napechatat_chislo (a);
 napechatat_stroky ("\");
+zavershit;

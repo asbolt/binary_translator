@@ -10,6 +10,7 @@ enum Node_type
     VARIABLE = 3,
     FUNC_2ARG = 4,
     FUNC_1ARG = 5,
+    USER_FUNC = 6,
     ERROR = 0 
 };
 
@@ -34,14 +35,18 @@ enum Operations_type
 enum Func_2arg_num
 {
     INT       = 1,
-    WHILE     = 2
+    WHILE     = 2,
+    IF  = 3,
+    FUNC = 4
 };
 
 enum Func_1arg_num
 {
     PRINT_INT       = 1,
     PRINT_STR = 2,
-    SCANF_INT = 3
+    SCANF_INT = 3,
+    EXIT = 4,
+    CALL = 5
 };
 
 union Node_value
@@ -102,7 +107,10 @@ struct Node *get_data (struct Token **token_table, int *current_token);
 struct Node *get_print (struct Token **token_table, int *current_token);
 struct Node *get_while (struct Token **token_table, int *current_token);
 struct Node *get_compare (struct Token **token_table, int *current_token);
+struct Node *get_end (struct Token **token_table, int *current_token);
+struct Node *get_func (struct Token **token_table, int *current_token);
 void node_tree_error (struct Token **token_table, int *current_token);
+struct Node *call_func (struct Token **token_table, int *current_token);
 void treeDump (struct Node *root);
 void treeDumpMakeNodeLabels (struct Node *root, int rang, FILE *dotFile);
 void treeDumpMakeArrows (struct Node *root, FILE *dotFile);

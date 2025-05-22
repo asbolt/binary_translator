@@ -36,7 +36,7 @@ void node_tree_dtor (struct Node *node)
 
 struct Node *make_tree (struct Token **token_table, int *current_node)
 {
-    struct Node *node = get_while (token_table, current_node);
+    struct Node *node = call_func (token_table, current_node);
 
     if (token_table[*current_node]->token_type == OPERATION && token_table[*current_node]->value.operation == ';')
     {
@@ -277,7 +277,16 @@ struct Node *get_equality (struct Token **token_table, int *current_token)
         (*current_token)++;
 
         parent_node->left = node;
-        parent_node->right = get_sum (token_table, current_token);
+
+        if (token_table[*current_token]->token_type == NAME && strcmp(token_table[*current_token]->value.string, "call_func") == 0 )
+        {
+            parent_node->right = call_func (token_table, current_token);
+        }
+        else 
+        {
+            parent_node->right = get_sum (token_table, current_token);
+        }
+
         return parent_node;
     }
     else
@@ -289,7 +298,19 @@ struct Node *get_equality (struct Token **token_table, int *current_token)
 
 struct Node *get_data (struct Token **token_table, int *current_token)
 {
-    if (token_table[*current_token]->token_type == NAME && strcmp (token_table[*current_token]->value.string, "celoe") == 0)
+    if (token_table[*current_token]->token_type == NAME && strcmp (token_table[*current_token]->value.string, "func") == 0)
+    {
+        struct Node *parent_node = node_ctor();
+        parent_node->type = FUNC_2ARG;
+        parent_node->value.number = FUNC;
+        (*current_token)++;
+
+        struct Node *name = get_func (token_table, current_token);
+
+        parent_node->left = name;
+        return parent_node;
+    }
+    else if (token_table[*current_token]->token_type == NAME && strcmp (token_table[*current_token]->value.string, "celoe") == 0)
     {
         struct Node *parent_node = node_ctor();
         parent_node->type = FUNC_2ARG;
@@ -451,6 +472,34 @@ struct Node *get_while (struct Token **token_table, int *current_token)
         parent_node->left = condition;
         return parent_node;
     }
+    else if (token_table[*current_token]->token_type == NAME && strcmp (token_table[*current_token]->value.string, "esli") == 0)
+    {
+        struct Node *parent_node = node_ctor();
+        parent_node->type = FUNC_2ARG;
+        parent_node->value.number = IF;
+        (*current_token)++;
+
+        struct Node *condition = NULL;
+        if (token_table[*current_token]->token_type == OPERATION && token_table[*current_token]->value.operation == '(')
+        {
+            (*current_token)++;
+
+            condition = get_compare (token_table, current_token);
+
+            if (token_table[*current_token]->token_type == OPERATION && token_table[*current_token]->value.operation == ')')
+            {
+                (*current_token)++;
+            }
+        }
+        else
+        {
+            node_tree_error (token_table, current_token);
+            return NULL;
+        }
+
+        parent_node->left = condition;
+        return parent_node;
+    }
     else
     {
         return get_print (token_table, current_token);
@@ -511,3 +560,63 @@ struct Node *get_compare (struct Token **token_table, int *current_token)
         return NULL;
     }
 }
+
+struct Node *get_end (struct Token **token_table, int *current_token)
+{
+    if (token_table[*current_token]->token_type == NAME && strcmp (token_table[*current_token]->value.string, "zavershit") == 0)
+    {
+        struct Node *node = node_ctor();
+        node->type = FUNC_1ARG;
+        node->value.number = EXIT;
+        (*current_token)++;
+
+        return node;
+    }
+    else
+    {
+        return get_while (token_table, current_token);
+    }
+}
+
+struct Node *get_func (struct Token **token_table, int *current_token)
+{
+    if (token_table[*current_token]->token_type == NAME)
+    {
+        struct Node *node = node_ctor();
+        node->type = USER_FUNC;
+        node->value.name = (char *)calloc (MAX_NAME_SIZE, sizeof (char));
+        strcpy (node->value.name, token_table[*current_token]->value.string);
+        (*current_token)++;
+
+        return node;
+    }
+    else
+    {
+        node_tree_error (token_table, current_token);
+        return NULL;
+    }
+}
+
+struct Node *call_func (struct Token **token_table, int *current_token)
+{
+    if (token_table[*current_token]->token_type == NAME && strcmp (token_table[*current_token]->value.string, "call_func") == 0)
+    {
+        (*current_token)++;
+        struct Node *node = node_ctor();
+        node->type = FUNC_1ARG;
+        node->value.number = CALL;
+
+        node->left = node_ctor ();
+        node->left->type = VARIABLE;
+        node->left->value.name = (char *)calloc (MAX_NAME_SIZE, sizeof (char));
+        strcpy (node->left->value.name, token_table[*current_token]->value.string);
+        (*current_token)++;
+
+        return node;
+    }
+    else
+    {
+        return get_end (token_table, current_token);
+    }
+}
+

@@ -2,109 +2,17 @@ section .text
                      global _start
                      
                      _start:
-mov rcx, 20
-     mov rdi, buffer 
-     mov al, 0 
-     rep stosb
-mov rax, 0
-     mov rdi, 0
-     mov rsi, buffer
-     mov rdx, 10
-     syscall
-mov rdi, buffer
-                     mov ebx, 10
-                     mov eax, 0
-                     next0x5e606e157e00:
-                     mul ebx
-                     mov edx, 0
-                     mov dl, byte [edi]
-                     add eax, edx
-                     sub eax, '0'
-                     inc edi
-                     cmp byte [edi], 10
-                     jne next0x5e606e157e00
-mov dword [c], eax
-jmp while0x5e606e157e80
-cond0x5e606e157e80:
-mov rax, 0
-mov eax, dword [b]
-push rax
-mov rax, 0
-mov eax, dword [a]
-push rax
-mov eax, 1
-push rax
-pop rax
-pop rbx
-add eax, ebx
-push rax
-pop rax
-pop rbx
-imul ebx
-push rax
-mov [b], eax
-mov rax, 0
-mov eax, dword [a]
-push rax
-mov eax, 1
-push rax
-pop rax
-pop rbx
-add eax, ebx
-push rax
-mov [a], eax
-while0x5e606e157e80:
-mov rax, 0
-mov eax, dword [a]
-push rax
-mov ecx, eax
-mov rax, 0
-mov eax, dword [c]
-push rax
-mov ebx, ecx
-                    cmp ebx, eax
-jl cond0x5e606e157e80
-mov eax, dword [c]
+mov eax, dword [amain]
  mov ebx, 10
  mov rsi, buffer + 18
- next0x5e606e158440:
+ next0x5ad1be28bf70:
  mov edx, 0
  div ebx
  mov byte [rsi], dl
  add byte [rsi], '0'
  dec rsi
  cmp eax, 0 
- jne next0x5e606e158440
- inc rsi
-mov rax, 1
-mov rdi, 1
-mov rdx, 20
- syscall
-mov rsi, buffer
-mov byte [rsi], 33
-inc rsi
-mov byte [rsi], 32
-inc rsi
-mov byte [rsi], 61
-inc rsi
-mov byte [rsi], 32
-inc rsi
-mov rax, 1
-mov rdi, 1
-mov rsi, buffer
-mov rdx, 4
- syscall
-mov eax, dword [b]
- mov ebx, 10
- mov rsi, buffer + 18
- next0x5e606e158540:
- mov edx, 0
- div ebx
- mov byte [rsi], dl
- add byte [rsi], '0'
- dec rsi
- cmp eax, 0 
- jne next0x5e606e158540
+ jne next0x5ad1be28bf70
  inc rsi
 mov rax, 1
 mov rdi, 1
@@ -122,8 +30,6 @@ mov rax, 60
                      xor rdi, rdi
                      syscall
 section .data
-a dd 1
-b dd 1
-c dd 0
+amain dd 4
 section .bss
          buffer resb 20

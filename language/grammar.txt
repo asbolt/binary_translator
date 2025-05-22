@@ -1,5 +1,0 @@
-get-sum ::= get-mul {['+', '-'] get-mul}*
-get-mul ::= get-brackets {['*', '/'] get-brackets}*
-get-brackets ::= '(' get-sum ')' | get-num
-get-num ::= ['0'-'9']+ | get-variable
-get-variable ::= ['a'-'z']+
